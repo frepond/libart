@@ -243,7 +243,7 @@ void* art_search(art_tree *t, unsigned char *key, int key_len) {
         }
 
         // Recursively search
-        child = find_child(n, key[depth]);
+        child = find_child(n, depth<key_len? key[depth]: '\0');
         n = (child) ? *child : NULL;
         depth++;
     }
@@ -555,7 +555,7 @@ static void* recursive_insert(art_node *n, art_node **ref, unsigned char *key, i
 RECURSE_SEARCH:;
 
     // Find a child to recurse to
-    art_node **child = find_child(n, key[depth]);
+    art_node **child = find_child(n, depth<key_len? key[depth]: '\0');
     if (child) {
         return recursive_insert(*child, child, key, key_len, value, depth+1, old);
     }
@@ -715,7 +715,7 @@ static art_leaf* recursive_delete(art_node *n, art_node **ref, unsigned char *ke
     }
 
     // Find child node
-    art_node **child = find_child(n, key[depth]);
+    art_node **child = find_child(n, depth<key_len? key[depth]: '\0');
     if (!child) return NULL;
 
     // If the child is leaf, delete from this node
@@ -881,7 +881,7 @@ int art_iter_prefix(art_tree *t, unsigned char *key, int key_len, art_callback c
         }
 
         // Recursively search
-        child = find_child(n, key[depth]);
+        child = find_child(n, depth<key_len? key[depth]: '\0');
         n = (child) ? *child : NULL;
         depth++;
     }
