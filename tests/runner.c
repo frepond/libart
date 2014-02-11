@@ -17,6 +17,7 @@ int main(void)
     tcase_add_test(tc1, test_art_init_and_destroy);
     tcase_add_test(tc1, test_art_insert);
     tcase_add_test(tc1, test_art_insert_verylong);
+    tcase_add_test(tc1, test_art_common_prefix);
     tcase_add_test(tc1, test_art_insert_search);
     tcase_add_test(tc1, test_art_insert_delete);
     tcase_add_test(tc1, test_art_insert_iter);

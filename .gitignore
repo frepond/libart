@@ -2,3 +2,7 @@
 .sconsign.dblite
 *~
 test_runner
+
+*.sublime-project
+
+*.sublime-workspace

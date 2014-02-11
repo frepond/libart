@@ -66,7 +66,7 @@ START_TEST(test_art_insert_verylong)
       251,173,202,199,101,0,8,18,180,93,46,151,9,212,190,95,
       108,176,217,47,50,219,61,134,207,97,151,88,237,246,208,
       8,18,255,255,255,219,191,198,134,5,223,212,72,44,208,
-      250,180,14,1,0,0,8, '\0'};
+      250,180,14,1,0,0,8};
     unsigned char key2[303] = {16,0,0,0,7,10,0,0,0,2,17,10,0,0,0,120,10,0,0,0,120,10,0,
       0,0,216,10,0,0,0,202,10,0,0,0,194,10,0,0,0,224,10,0,0,0,
       230,10,0,0,0,210,10,0,0,0,206,10,0,0,0,208,10,0,0,0,232,
@@ -84,13 +84,49 @@ START_TEST(test_art_insert_verylong)
       155,165,150,229,97,182,0,8,18,161,91,239,50,10,61,150,
       223,114,179,217,64,8,12,186,219,172,150,91,53,166,221,
       101,178,0,8,18,255,255,255,219,191,198,134,5,208,212,72,
-      44,208,250,180,14,1,0,0,8, '\0'};
+      44,208,250,180,14,1,0,0,8};
 
 
     fail_unless(NULL == art_insert(&t, key1, 299, (void*)key1));
     fail_unless(NULL == art_insert(&t, key2, 302, (void*)key2));
     art_insert(&t, key2, 302, (void*)key2);
     fail_unless(art_size(&t) == 2);
+
+    res = destroy_art_tree(&t);
+    fail_unless(res == 0);
+}
+END_TEST
+
+START_TEST(test_art_common_prefix)
+{
+    art_tree t;
+    int res = init_art_tree(&t);
+    char* keys[10] = {"1", "10", "100", "1000", "10000", "100000", 
+                                "1000000", "10000000", "100000000", "1000000000"};
+    fail_unless(res == 0);
+
+    // Insert each keys array element
+    for (long i = 0; i < 10; i++) {
+        fail_unless(NULL ==
+            art_insert(&t, (unsigned char*)keys[i], i + 1, keys[i]));
+    }
+  
+    // Search for each keys array element
+    for (int i = 0; i < 10; i++) {
+        char* val = (char*)art_search(&t, (unsigned char*)keys[i], i + 1);
+        fail_unless(strncmp(val, keys[i], i + 1) == 0);
+    }
+
+    // Check the minimum
+    art_leaf *l = art_minimum(&t);
+    fail_unless(l && strncmp((char*)l->key, "1", 1) == 0);
+
+    // Check the maximum
+    l = art_maximum(&t);
+    fail_unless(l && strncmp((char*)l->key, "1000000000", 10) == 0);
+
+    // Check size
+    fail_unless(10, art_size(&t));
 
     res = destroy_art_tree(&t);
     fail_unless(res == 0);
