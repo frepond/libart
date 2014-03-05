@@ -565,7 +565,7 @@ RECURSE_SEARCH:;
 
     // No child, node goes within us
     art_leaf *l = make_leaf(key, key_len, value);
-    add_child(n, ref, key[depth], SET_LEAF(l));
+    add_child(n, ref, depth<key_len? key[depth]: '\0', SET_LEAF(l));
     return NULL;
 }
 
