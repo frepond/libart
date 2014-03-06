@@ -118,7 +118,6 @@ int destroy_art_tree(art_tree *t) {
 /**
  * Returns the size of the ART tree.
  */
-
 #ifndef BROKEN_GCC_C99_INLINE
 extern inline uint64_t art_size(art_tree *t);
 #endif
@@ -277,6 +276,7 @@ static art_leaf* minimum(art_node *n) {
         default:
             abort();
     }
+    return NULL;
 }
 
 // Find the maximum leaf under a node
@@ -303,6 +303,7 @@ static art_leaf* maximum(art_node *n) {
         default:
             abort();
     }
+    return NULL;
 }
 
 /**
@@ -448,13 +449,17 @@ static void add_child4(art_node4 *n, art_node **ref, unsigned char c, void *chil
 static void add_child(art_node *n, art_node **ref, unsigned char c, void *child) {
     switch (n->type) {
         case NODE4:
-            return add_child4((art_node4*)n, ref, c, child);
+            add_child4((art_node4*)n, ref, c, child);
+			break;
         case NODE16:
-            return add_child16((art_node16*)n, ref, c, child);
+            add_child16((art_node16*)n, ref, c, child);
+			break;
         case NODE48:
-            return add_child48((art_node48*)n, ref, c, child);
+            add_child48((art_node48*)n, ref, c, child);
+			break;
         case NODE256:
-            return add_child256((art_node256*)n, ref, c, child);
+            add_child256((art_node256*)n, ref, c, child);
+			break;
         default:
             abort();
     }
